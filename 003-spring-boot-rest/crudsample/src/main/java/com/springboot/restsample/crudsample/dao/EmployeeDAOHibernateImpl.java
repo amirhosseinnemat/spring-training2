@@ -35,10 +35,48 @@ public class EmployeeDAOHibernateImpl implements EmployeeDAO {
 
 
         // create a query
-        Query<Employee> theQuery = currentSession.createQuery("FROM Employee ", Employee.class);
+        Query<Employee> theQuery = currentSession.createQuery("From Employee ", Employee.class);
         // execute query and get result list
         List<Employee> employees = theQuery.getResultList();
         //return the results
         return employees;
+    }
+
+    @Override
+    @Transactional
+    public Employee findById(int theId) {
+
+        // get session
+        Session currentSession = entityManager.unwrap(Session.class);
+
+        // get Employee
+        Employee theEmployee = currentSession.get(Employee.class, theId);
+
+        // return employee
+        return theEmployee;
+
+    }
+
+    @Override
+    public void save(Employee theEmployee) {
+        // get session
+        Session currentSession = entityManager.unwrap(Session.class);
+
+        // save entity in session
+        currentSession.saveOrUpdate(theEmployee);
+
+    }
+
+    @Override
+    public void deleteById(int theId) {
+
+        // get session
+        Session currentSession = entityManager.unwrap(Session.class);
+
+        // delete object with primary key
+        Query theQuery = currentSession.createQuery("delete from Employee where id=:employeeId");
+        theQuery.setParameter("employeeId", theId);
+
+        theQuery.executeUpdate();
     }
 }
